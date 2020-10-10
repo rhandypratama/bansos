@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bansos/pages/penyaluran.dart';
 import 'package:bansos/utils/widget-model.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -87,6 +88,27 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
     super.initState();
   }
 
+  CollectionReference users = FirebaseFirestore.instance.collection('penerimas');
+  Future<void> addUser() {
+    return users
+      .add({
+        'bank': 'bni',
+        'id_kartu': controllerIdKartu.text,
+        'kelompok': currentCat,
+        'nama': controllerNama.text,
+      })
+      .then((value) => print("User Added"))
+      .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  Future<void> updateUser(docId) {
+    return users
+      .doc(docId)
+      .update({'company': 'Stokes and Sons'})
+      .then((value) => print("User Updated"))
+      .catchError((error) => print("Failed to update user: $error"));
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -103,8 +125,9 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
         leading: IconButton(
           icon: SvgPicture.asset("assets/icons/back.svg"),
           onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
+            // Navigator.pop(context);
+            // Navigator.pop(context);
+            navigationManager(context, Penyaluran(), isPushReplaced: true);
           },
         ),
         title: dynamicText(
@@ -271,6 +294,9 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
           // }
           setState(() => isLoading = true);
           if (widget.isEdit) {
+            // await updateUser(widget.documentId);
+            // navigationManager(context, Penyaluran(), isPushReplaced: true);
+
             DocumentReference documentTask = firestore.doc('penerimas/${widget.documentId}');
             firestore.runTransaction((transaction) async {
               DocumentSnapshot dt = await transaction.get(documentTask);
@@ -283,8 +309,9 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
                     'nama': nama,
                   },
                 );
-                Navigator.pop(context, true);
-                Navigator.pop(context, true);
+                // Navigator.pop(context, true);
+                // Navigator.pop(context, true);
+                navigationManager(context, Penyaluran(), isPushReplaced: true);
               }
             });
           } else {
@@ -295,9 +322,11 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
               'kelompok': currentCat,
               'nama': nama,
             });
+            // await addUser();
             if (result.id != null) {
-              Navigator.pop(context, true);
-              Navigator.pop(context, true);
+              // Navigator.pop(context);
+              // Navigator.pop(context, true);
+              navigationManager(context, Penyaluran(), isPushReplaced: true);
             }
           }
         },

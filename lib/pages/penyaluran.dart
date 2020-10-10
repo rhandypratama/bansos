@@ -91,7 +91,7 @@ class _PenyaluranState extends State<Penyaluran> {
     setState(() {
       _totalPenerima = dt.docs.length;
     });
-    print(_totalPenerima);
+    // print(_totalPenerima);
     // return "complete";
   }
 
@@ -174,14 +174,14 @@ class _PenyaluranState extends State<Penyaluran> {
         backgroundColor: Colors.indigo,
         child: Icon(Icons.add),
         onPressed: () async {
-          bool result = await Navigator.push(context, MaterialPageRoute(builder: (context) => AddPenerimaScreen(isEdit: false)));
+          bool result = await Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AddPenerimaScreen(isEdit: false)));
           if (result != null && result) {
             scaffoldState.currentState.showSnackBar(SnackBar(
               content: Text('Data penerima berhasil disimpan'),
             ));
             setState(() {});
           }
-          navigationManager(context, Penyaluran(), isPushReplaced: false);
+          // navigationManager(context, Penyaluran(), isPushReplaced: false);
         },
       ),
     );

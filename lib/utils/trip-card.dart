@@ -231,8 +231,7 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                     },
                     onSelected: (String value) async {
                       if (value == 'edit') {
-                        bool result = await Navigator.push(
-                          context,
+                        bool result = await Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
                             return AddPenerimaScreen(
                               isEdit: true,
@@ -248,7 +247,7 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                           showMessage('Data penerima berhasil diupdate');
                           // setState(() {});
                         }
-                        navigationManager(context, Penyaluran(), isPushReplaced: false);
+                        // navigationManager(context, Penyaluran(), isPushReplaced: false);
                       } else if (value == 'delete') {
                         showDialog(
                           context: context,

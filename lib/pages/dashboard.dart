@@ -236,7 +236,10 @@ class _DashboardState extends State<Dashboard> {
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
+                      return Padding(
+                        padding: const EdgeInsets.all(14.0),
+                        child: CircularProgressIndicator(),
+                      );
                     }
                     // if (!mounted) setState(() => _totalTransaksi = snapshot.data.docs.length);
                     return new Text(
@@ -568,7 +571,14 @@ class _DashboardState extends State<Dashboard> {
                             return Text('Something went wrong');
                           }
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Text("Loading");
+                            // return Padding(
+                            //   padding: const EdgeInsets.all(20.0),
+                            //   child: Container(
+                            //     width: 20,
+                            //     child: CircularProgressIndicator(),
+                            //   ),
+                            // );
+                            return Text("Load.. ");
                           }
                           var no = 0;
                           for(var dt in snapshot.data.docs) {
