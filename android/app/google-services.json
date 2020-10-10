@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "725255909038",
+    "firebase_url": "https://bansos-4446a.firebaseio.com",
+    "project_id": "bansos-4446a",
+    "storage_bucket": "bansos-4446a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725255909038:android:1274b9ca36785d4e22073f",
+        "android_client_info": {
+          "package_name": "com.indotransweb.bansos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "725255909038-7m53d0rbiq0kpe9qsseefgtd6mpo9eob.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhz3b2C_w07yw4oVP4KULAb9tkRBC28aM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "725255909038-7m53d0rbiq0kpe9qsseefgtd6mpo9eob.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
