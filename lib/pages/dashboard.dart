@@ -1,6 +1,7 @@
 import 'package:bansos/pages/kelompok/home.dart';
 import 'package:bansos/pages/penyaluran.dart';
 import 'package:bansos/utils/widget-model.dart';
+import 'package:content_placeholder/content_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -91,18 +92,18 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void initState() {
+    super.initState();
     countPenerima();
     countTransaksi();
     getKelompok();
-    super.initState();
   }
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     countPenerima();
     countTransaksi();
     getKelompok();
-    super.didChangeDependencies();
   }
 
   @override
@@ -129,7 +130,10 @@ class _DashboardState extends State<Dashboard> {
                 Padding(
                   padding: EdgeInsets.only(top: 40),
                 ),
-
+                // ContentPlaceholder(
+                //   height: 80,
+                //   width: 100,
+                // ),
                 StreamBuilder<QuerySnapshot>(
                   stream: firestore.collection('penyalurans')
                     .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
@@ -140,9 +144,10 @@ class _DashboardState extends State<Dashboard> {
                     }
 
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Padding(
-                        padding: const EdgeInsets.all(14.0),
-                        child: CircularProgressIndicator(),
+                      return ContentPlaceholder(
+                        height: 60,
+                        width: 80,
+                        spacing: EdgeInsets.all(0),
                       );
                     }
                     // if (!mounted) setState(() => _totalTransaksi = snapshot.data.docs.length);
@@ -155,14 +160,7 @@ class _DashboardState extends State<Dashboard> {
                         fontWeight: FontWeight.bold,
                       ),
                     );
-                    // ListView(
-                    //   children: snapshot.data.documents.map((DocumentSnapshot document) {
-                    //     return new ListTile(
-                    //       title: new Text(document.data()['full_name']),
-                    //       subtitle: new Text(document.data()['company']),
-                    //     );
-                    //   }).toList(),
-                    // );
+                    
                   },
                 ),
 
@@ -177,21 +175,18 @@ class _DashboardState extends State<Dashboard> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          // Text(
-                          //   '0 penerima'.toUpperCase(),
-                          //   style: TextStyle(
-                          //     color: Colors.grey,
-                          //   ),
-                          // ),
-                          
                           StreamBuilder<QuerySnapshot>(
                             stream: firestore.collection('penerimas').snapshots(),
                             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                               if (snapshot.hasError) {
-                                return Text('Something went wrong');
+                                return Text('No Data');
                               }
                               if (snapshot.connectionState == ConnectionState.waiting) {
-                                return Text("TOTAL SELURUH PENERIMA 0");
+                                return ContentPlaceholder(
+                                  height: 16,
+                                  width: 150,
+                                  spacing: EdgeInsets.all(0),
+                                );
                               }
                               if (!mounted) setState(() => _totalPenerima = snapshot.data.docs.length);
                               return Text(
@@ -220,14 +215,7 @@ class _DashboardState extends State<Dashboard> {
                       Padding(
                         padding: EdgeInsets.only(top: 40),
                       ),
-                      
-                      // Text(
-                      //   'You walked 165 min today',
-                      //   style: TextStyle(
-                      //     color: Theme.of(context).accentColor,
-                      //     fontSize: 16,
-                      //   ),
-                      // ),
+
                     ],
                   ),
                 ),
@@ -264,7 +252,11 @@ class _DashboardState extends State<Dashboard> {
                                   return Text('Something went wrong');
                                 }
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Text("0 transaksi");
+                                  return ContentPlaceholder(
+                                    height: 12,
+                                    width: 100,
+                                    spacing: EdgeInsets.all(0),
+                                  );
                                 }
                                 return RichText(
                                   text: TextSpan(
@@ -299,11 +291,16 @@ class _DashboardState extends State<Dashboard> {
                                 .where('jenis', isEqualTo: 'sembako')
                                 .snapshots(),
                               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                
                                 if (snapshot.hasError) {
                                   return Text('Something went wrong');
                                 }
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Text("RP 0");
+                                  return ContentPlaceholder(
+                                    height: 12,
+                                    width: 100,
+                                    spacing: EdgeInsets.all(0),
+                                  );
                                 }
                                 // Map<String, dynamic> data = snapshot.data.docs;
                                 var grandTotal = 0;
@@ -350,7 +347,11 @@ class _DashboardState extends State<Dashboard> {
                                   return Text('Something went wrong');
                                 }
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Text("0 transaksi");
+                                  return ContentPlaceholder(
+                                    height: 12,
+                                    width: 100,
+                                    spacing: EdgeInsets.all(0),
+                                  );
                                 }
                                 return RichText(
                                   text: TextSpan(
@@ -389,7 +390,11 @@ class _DashboardState extends State<Dashboard> {
                                   return Text('Something went wrong');
                                 }
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Text("RP 0");
+                                  return ContentPlaceholder(
+                                    height: 12,
+                                    width: 100,
+                                    spacing: EdgeInsets.all(0),
+                                  );
                                 }
                                 // Map<String, dynamic> data = snapshot.data.docs;
                                 var grandTotal = 0;
@@ -451,7 +456,11 @@ class _DashboardState extends State<Dashboard> {
                               return Text('Something went wrong');
                             }
                             if (snapshot.connectionState == ConnectionState.waiting) {
-                              return Text("RP 0");
+                              return ContentPlaceholder(
+                                height: 30,
+                                width: 100,
+                                spacing: EdgeInsets.all(0),
+                              );
                             }
                             // Map<String, dynamic> data = snapshot.data.docs;
                             var grandTotal = 0;
@@ -506,14 +515,11 @@ class _DashboardState extends State<Dashboard> {
                           return Text('Something went wrong');
                         }
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          // return Padding(
-                          //   padding: const EdgeInsets.all(20.0),
-                          //   child: Container(
-                          //     width: 20,
-                          //     child: CircularProgressIndicator(),
-                          //   ),
-                          // );
-                          return Text("Load.. ");
+                          return ContentPlaceholder(
+                            height: 50,
+                            width: 100,
+                            spacing: EdgeInsets.all(0),
+                          );
                         }
                         var no = 0;
                         for(var dt in snapshot.data.docs) {
@@ -522,12 +528,12 @@ class _DashboardState extends State<Dashboard> {
                           }
                         }
                         return Card(
-                          elevation: 8.0,
+                          elevation: 0.0,
                           margin: new EdgeInsets.symmetric(horizontal: 0.0, vertical: 3.0),
                           child: Container(
                             decoration: BoxDecoration(
                               color: Color.fromRGBO(64, 75, 96, .9),
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: ListTile(
                               contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
