@@ -323,80 +323,76 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
       width: double.infinity,
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          RaisedButton(
-            color: Theme.of(context).primaryColor,
-            child: Padding(
-              padding: EdgeInsets.all(14),
-              child: dynamicText(widget.isEdit ? 'UPDATE' : 'SIMPAN',
-              fontSize: 16,
-              color: Colors.white
-            )),
-            textColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            onPressed: () async {
-              // uploadImage();
-              String nama = controllerNama.text;
-              String idKartu = controllerIdKartu.text;
-              if (currentCat.isEmpty) {
-                showMessage('Pilih kelompok yang tersedia');
-                return;
-              } else if (nama.isEmpty) {
-                showMessage('Nama penerima harus diisi');
-                return;
-              } 
-              // else if (idKartu.isEmpty) {
-              //   showMessage('ID Kartu harus diisi');
-              //   return;
-              // }
-              setState(() => isLoading = true);
-              if (widget.isEdit) {
-                // await updateUser(widget.documentId);
-                // navigationManager(context, Penyaluran(), isPushReplaced: true);
+      child: RaisedButton(
+        // color: Theme.of(context).primaryColor,
+        color: Colors.indigo,
+        child: Padding(
+          padding: EdgeInsets.all(14),
+          child: dynamicText(widget.isEdit ? 'UPDATE' : 'SIMPAN',
+          fontSize: 16,
+          color: Colors.white
+        )),
+        textColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        onPressed: () async {
+          // uploadImage();
+          String nama = controllerNama.text;
+          String idKartu = controllerIdKartu.text;
+          if (currentCat.isEmpty) {
+            showMessage('Pilih kelompok yang tersedia');
+            return;
+          } else if (nama.isEmpty) {
+            showMessage('Nama penerima harus diisi');
+            return;
+          } 
+          // else if (idKartu.isEmpty) {
+          //   showMessage('ID Kartu harus diisi');
+          //   return;
+          // }
+          setState(() => isLoading = true);
+          if (widget.isEdit) {
+            // await updateUser(widget.documentId);
+            // navigationManager(context, Penyaluran(), isPushReplaced: true);
 
-                DocumentReference documentTask = firestore.doc('penerimas/${widget.documentId}');
-                firestore.runTransaction((transaction) async {
-                  DocumentSnapshot dt = await transaction.get(documentTask);
-                  if (dt.exists) {
-                    transaction.update(
-                      documentTask,
-                      <String, dynamic>{
-                        'id_kartu': idKartu,
-                        'kelompok': currentCat,
-                        'nama': nama,
-                      },
-                    );
-                    // Navigator.pop(context, true);
-                    // Navigator.pop(context, true);
-                    // navigationManager(context, Penyaluran(), isPushReplaced: true);
-                    setState(() => isLoading = false);
-                    showMessage("Data penerima berhasil diupdate");
-                  }
-                });
-              } else {
-                CollectionReference product = firestore.collection('penerimas');
-                DocumentReference result = await product.add(<String, dynamic>{
-                  'bank': 'bni',
-                  'id_kartu': idKartu,
-                  'kelompok': currentCat,
-                  'nama': nama,
-                });
-                // await addUser();
-                if (result.id != null) {
-                  // Navigator.pop(context);
-                  // Navigator.pop(context, true);
-                  // navigationManager(context, Penyaluran(), isPushReplaced: true);
-                  setState(() => isLoading = false);
-                  showMessage("Data penerima berhasil disimpan");
-                }
+            DocumentReference documentTask = firestore.doc('penerimas/${widget.documentId}');
+            firestore.runTransaction((transaction) async {
+              DocumentSnapshot dt = await transaction.get(documentTask);
+              if (dt.exists) {
+                transaction.update(
+                  documentTask,
+                  <String, dynamic>{
+                    'id_kartu': idKartu,
+                    'kelompok': currentCat,
+                    'nama': nama,
+                  },
+                );
+                // Navigator.pop(context, true);
+                // Navigator.pop(context, true);
+                // navigationManager(context, Penyaluran(), isPushReplaced: true);
+                setState(() => isLoading = false);
+                showMessage("Data penerima berhasil diupdate");
               }
-            },
-          ),
-        ],
+            });
+          } else {
+            CollectionReference product = firestore.collection('penerimas');
+            DocumentReference result = await product.add(<String, dynamic>{
+              'bank': 'bni',
+              'id_kartu': idKartu,
+              'kelompok': currentCat,
+              'nama': nama,
+            });
+            // await addUser();
+            if (result.id != null) {
+              // Navigator.pop(context);
+              // Navigator.pop(context, true);
+              // navigationManager(context, Penyaluran(), isPushReplaced: true);
+              setState(() => isLoading = false);
+              showMessage("Data penerima berhasil disimpan");
+            }
+          }
+        },
       ),
     );
   }

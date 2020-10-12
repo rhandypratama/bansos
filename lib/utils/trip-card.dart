@@ -109,23 +109,24 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     dynamicText("Apakah yakin ${penerima.nama.toUpperCase()} - ${penerima.idKartu} akan menerima sembako?",
-                                        fontSize: 16.0,
+                                        fontSize: 18.0,
                                         fontWeight: FontWeight.w500,
                                         textAlign: TextAlign.left),
-                                    SizedBox(height: 10.0),
+                                    SizedBox(height: 20.0),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         OutlineButton(
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
-                                          child: dynamicText("TIDAK", fontSize: 12, color: Colors.red, fontWeight: FontWeight.bold),
+                                          child: dynamicText("TIDAK", fontSize: 14, color: Colors.red, fontWeight: FontWeight.bold),
                                           color: Colors.red,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(30.0)
                                           )
                                         ),
+                                        SizedBox(width: 10),
                                         OutlineButton(
                                           onPressed: () async {
                                             CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
@@ -224,79 +225,186 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                     padding: EdgeInsets.all(0),
                     child: dynamicText("UANG TUNAI", fontSize: 12, color: Colors.red),
                     onPressed: () {
-                      showDialog(
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      showModalBottomSheet(
+                        isScrollControlled: true,
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            // title: Text('Are You Sure'),
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFormField(
-                                  controller: _uangController,
-                                  autocorrect: false,
-                                  onFieldSubmitted: (term) {
-                                    // _nominalFocus.unfocus();
-                                  },
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    labelText: "Nominal",
-                                    labelStyle: TextStyle(fontSize: 20.0),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 20),
-                                    helperText: "Contoh : 450000 (tanpa titik / koma / spasi)"
-                                  ),
-                                  style: TextStyle(fontSize: 28),
-                                ),
-                                SizedBox(height: 20),
-                                Text('Apakah yakin ${penerima.nama.toUpperCase()} akan menerima uang tunai?'),
-                                
-                              ],
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('TIDAK'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              FlatButton(
-                                child: Text('PROSES'),
-                                onPressed: () async {
-                                  if (_uangController.text == "") {
-                                    showToast('Nominal wajib diisi',
-                                      context: context,
-                                      axis: Axis.horizontal,
-                                      alignment: Alignment.center,
-                                      position: StyledToastPosition.center);
-                                  } else {
-                                    CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
-                                    DocumentReference result = await penyaluran.add(<String, dynamic>{
-                                      'jenis': 'uang tunai',
-                                      'penerima': {
-                                        'bank': penerima.bank,
-                                        'id_kartu': penerima.idKartu,
-                                        'kelompok': penerima.kelompok,
-                                        'nama': penerima.nama
+                        builder: (builder) {
+                          return Container(
+                            decoration: new BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: new BorderRadius.only(
+                                topLeft: const Radius.circular(40.0),
+                                topRight: const Radius.circular(40.0))),
+                            child: Padding(
+                            // padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18.0),
+                            padding: EdgeInsets.only(
+                                top: 6,
+                                left: 18,
+                                right: 18,
+                                bottom: MediaQuery.of(context).viewInsets.bottom),
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top : 20, bottom: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    TextFormField(
+                                      controller: _uangController,
+                                      autocorrect: false,
+                                      onFieldSubmitted: (term) {
+                                        // _nominalFocus.unfocus();
                                       },
-                                      'tanggal_pengambilan': DateTime.now(),
-                                      'total': int.parse(_uangController.text),
-                                    });
-                                    if (result.id != null) {
-                                      Navigator.pop(context);
-                                      showToast('Data berhasil disimpan',
-                                        context: context,
-                                        axis: Axis.horizontal,
-                                        alignment: Alignment.center,
-                                        position: StyledToastPosition.center);
-                                      // _showSnackBarMessage("Data berhasil disimpan");
-                                    }
-                                  }
-                                },
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        labelText: "Nominal",
+                                        labelStyle: TextStyle(fontSize: 20.0),
+                                        contentPadding: EdgeInsets.symmetric(vertical: 20),
+                                        helperText: "Contoh : 450000 (tanpa titik / koma / spasi)"
+                                      ),
+                                      style: TextStyle(fontSize: 28),
+                                    ),
+                                SizedBox(height: 40),
+                                    dynamicText("Apakah yakin ${penerima.nama.toUpperCase()} - ${penerima.idKartu} akan menerima uang tunai?",
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w500,
+                                        textAlign: TextAlign.left),
+                                    SizedBox(height: 40.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        OutlineButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: dynamicText("TIDAK", fontSize: 14, color: Colors.red, fontWeight: FontWeight.bold),
+                                          color: Colors.red,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0)
+                                          )
+                                        ),
+                                        SizedBox(width: 10),
+                                        OutlineButton(
+                                          onPressed: () async {
+                                            if (_uangController.text == "") {
+                                              showToast('Nominal wajib diisi',
+                                                context: context,
+                                                axis: Axis.horizontal,
+                                                alignment: Alignment.center,
+                                                position: StyledToastPosition.center);
+                                            } else {
+                                              CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
+                                              DocumentReference result = await penyaluran.add(<String, dynamic>{
+                                                'jenis': 'uang tunai',
+                                                'penerima': {
+                                                  'bank': penerima.bank,
+                                                  'id_kartu': penerima.idKartu,
+                                                  'kelompok': penerima.kelompok,
+                                                  'nama': penerima.nama
+                                                },
+                                                'tanggal_pengambilan': DateTime.now(),
+                                                'total': int.parse(_uangController.text),
+                                              });
+                                              if (result.id != null) {
+                                                Navigator.pop(context);
+                                                showToast('Data berhasil disimpan',
+                                                  context: context,
+                                                  axis: Axis.horizontal,
+                                                  alignment: Alignment.center,
+                                                  position: StyledToastPosition.center);
+                                                // _showSnackBarMessage("Data berhasil disimpan");
+                                              }
+                                            }
+                                          },
+                                          child: dynamicText("PROSES", fontSize: 14, color: Colors.green, fontWeight: FontWeight.bold),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0)
+                                          ),
+
+                                        ),
+                                      ],
+                                    )
+                                  ]
+                                ),
                               ),
-                            ],
-                          );
-                        },
+                            ),
+                          ));
+                        }
                       );
+                      
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) {
+                      //     return AlertDialog(
+                      //       // title: Text('Are You Sure'),
+                      //       content: Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.start,
+                      //         children: [
+                      //           TextFormField(
+                      //             controller: _uangController,
+                      //             autocorrect: false,
+                      //             onFieldSubmitted: (term) {
+                      //               // _nominalFocus.unfocus();
+                      //             },
+                      //             keyboardType: TextInputType.number,
+                      //             decoration: InputDecoration(
+                      //               labelText: "Nominal",
+                      //               labelStyle: TextStyle(fontSize: 20.0),
+                      //               contentPadding: EdgeInsets.symmetric(vertical: 20),
+                      //               helperText: "Contoh : 450000 (tanpa titik / koma / spasi)"
+                      //             ),
+                      //             style: TextStyle(fontSize: 28),
+                      //           ),
+                      //           SizedBox(height: 20),
+                      //           Text('Apakah yakin ${penerima.nama.toUpperCase()} akan menerima uang tunai?'),
+                                
+                      //         ],
+                      //       ),
+                      //       actions: <Widget>[
+                      //         FlatButton(
+                      //           child: Text('TIDAK'),
+                      //           onPressed: () {
+                      //             Navigator.pop(context);
+                      //           },
+                      //         ),
+                      //         FlatButton(
+                      //           child: Text('PROSES'),
+                      //           onPressed: () async {
+                      //             if (_uangController.text == "") {
+                      //               showToast('Nominal wajib diisi',
+                      //                 context: context,
+                      //                 axis: Axis.horizontal,
+                      //                 alignment: Alignment.center,
+                      //                 position: StyledToastPosition.center);
+                      //             } else {
+                      //               CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
+                      //               DocumentReference result = await penyaluran.add(<String, dynamic>{
+                      //                 'jenis': 'uang tunai',
+                      //                 'penerima': {
+                      //                   'bank': penerima.bank,
+                      //                   'id_kartu': penerima.idKartu,
+                      //                   'kelompok': penerima.kelompok,
+                      //                   'nama': penerima.nama
+                      //                 },
+                      //                 'tanggal_pengambilan': DateTime.now(),
+                      //                 'total': int.parse(_uangController.text),
+                      //               });
+                      //               if (result.id != null) {
+                      //                 Navigator.pop(context);
+                      //                 showToast('Data berhasil disimpan',
+                      //                   context: context,
+                      //                   axis: Axis.horizontal,
+                      //                   alignment: Alignment.center,
+                      //                   position: StyledToastPosition.center);
+                      //                 // _showSnackBarMessage("Data berhasil disimpan");
+                      //               }
+                      //             }
+                      //           },
+                      //         ),
+                      //       ],
+                      //     );
+                      //   },
+                      // );
                     },
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
                   ),

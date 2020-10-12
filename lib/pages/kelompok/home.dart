@@ -1,5 +1,6 @@
 import 'package:bansos/pages/kelompok/list-belum-proses.dart';
 import 'package:bansos/pages/kelompok/list-proses.dart';
+import 'package:bansos/pages/kelompok/list-semua.dart';
 import 'package:bansos/utils/widget-model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,7 +22,7 @@ class _HomeKelompokState extends State<HomeKelompok> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           // extendBodyBehindAppBar: true,
           appBar: AppBar(
@@ -42,8 +43,11 @@ class _HomeKelompokState extends State<HomeKelompok> {
             // ],
             bottom: TabBar(
               labelColor: Colors.black,
-              indicatorWeight: 3,
-              indicatorSize: TabBarIndicatorSize.label,
+              isScrollable: true,
+              indicatorWeight: 4,
+              indicatorSize: TabBarIndicatorSize.tab,
+              // indicatorSize: TabBarIndicatorSize.label,
+              
               unselectedLabelColor: Colors.grey,
               unselectedLabelStyle: TextStyle(fontSize: 18, color: Colors.grey),
               labelStyle: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
@@ -55,13 +59,13 @@ class _HomeKelompokState extends State<HomeKelompok> {
               tabs: [
                 Tab(
                   child: Container(
-                    width: 260,
+                    // width: 290,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: dynamicText("SUDAH DI PROSES (${widget.totalTransaksi})", fontSize: 12)
+                          child: dynamicText("TER-PROSES (${widget.totalTransaksi})", fontSize: 14)
                         )
                       ]
                     ),
@@ -69,19 +73,17 @@ class _HomeKelompokState extends State<HomeKelompok> {
                 ),
                 Tab(
                   child: Container(
-                    width: 260,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          // child: dynamicText("BELUM MENGAMBIL", fontSize: 14)
-                          child: dynamicText("KESIMPULAN", fontSize: 12)
-                        )
-                      ]
-                    ),
+                    // width: 70,
+                    child: dynamicText("SEMUA", fontSize: 14)
                   ),
                 ),
+                Tab(
+                  child: Container(
+                    // width: 100,
+                    child: dynamicText("KESIMPULAN", fontSize: 14)
+                  ),
+                ),
+                
                            
               ]
             ),
@@ -89,6 +91,7 @@ class _HomeKelompokState extends State<HomeKelompok> {
           
           body: TabBarView(children: <Widget>[
             ListProses(kelompok: widget.namaKelompok),
+            ListSemua(kelompok: widget.namaKelompok),
             ListBelumProses(kelompok: widget.namaKelompok),
             // BarangScreen(),
             // DaftarPesananScreen(),
