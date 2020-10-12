@@ -31,8 +31,10 @@ class AddPenerimaScreen extends StatefulWidget {
 class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
   final GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final TextEditingController controllerNama = TextEditingController();
-  final TextEditingController controllerIdKartu = TextEditingController();
+  final controllerNama = TextEditingController();
+  final controllerIdKartu = TextEditingController();
+  final FocusNode _namaFocus = FocusNode();
+  final FocusNode _idKartuFocus = FocusNode();
   
   double widthScreen;
   double heightScreen;
@@ -66,6 +68,13 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
       alignment: Alignment.center,
       position: StyledToastPosition.center
     );
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    controllerNama.dispose();
+    controllerIdKartu.dispose();
   }
 
   @override
@@ -133,7 +142,8 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
         title: dynamicText(
           widget.isEdit ? "Edit data penerima" : "Tambah data penerima baru",
           fontFamily: "Bebas",
-          fontSize: 20
+          fontSize: 22,
+          fontWeight: FontWeight.bold
         ),
       ),
       body: SafeArea(
@@ -154,9 +164,7 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
                           color: Colors.white,
                           padding: const EdgeInsets.all(16.0),
                           child: Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                            ),
+                            child: CircularProgressIndicator(),
                           ),
                         )
                       : _buildWidgetButtonCreateTask(context),
@@ -195,30 +203,80 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
   //   );
   // }
 
+  Widget namaField() {
+    return TextFormField(
+      controller: controllerNama,
+      autocorrect: false,
+      textInputAction: TextInputAction.next,
+      textCapitalization: TextCapitalization.none,
+      focusNode: _namaFocus,
+      onFieldSubmitted: (term) {
+        _namaFocus.unfocus();
+      },
+      keyboardType: TextInputType.text,
+      decoration: InputDecoration(
+        labelText: "Nama Penerima",
+        labelStyle: TextStyle(fontSize: 20.0),
+        contentPadding: EdgeInsets.symmetric(vertical: 10),
+        // helperText: "Contoh : 0001234567890"
+      ),
+      style: TextStyle(fontSize: 24),
+      
+      // decoration: textInputDecoration(Icons.person, "Email", snapshot, hintText: "Email"),
+    );
+      
+  }
+
+  Widget idKartuField() {
+    return TextFormField(
+      controller: controllerIdKartu,
+      autocorrect: false,
+      textInputAction: TextInputAction.done,
+      textCapitalization: TextCapitalization.none,
+      focusNode: _idKartuFocus,
+      onFieldSubmitted: (term) {
+        _idKartuFocus.unfocus();
+      },
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: "ID Kartu",
+        labelStyle: TextStyle(fontSize: 20.0),
+        contentPadding: EdgeInsets.symmetric(vertical: 10),
+        // helperText: "Contoh : 0001234567890"
+      ),
+      style: TextStyle(fontSize: 24),
+      
+      // decoration: textInputDecoration(Icons.person, "Email", snapshot, hintText: "Email"),
+    );
+      
+  }
+
   Widget _buildWidgetFormSecondary() {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
         child: Column(
           children: <Widget>[
-            TextField(
-              controller: controllerNama,
-              decoration: InputDecoration(
-                labelText: 'Nama Penerima',
-                labelStyle: TextStyle(fontSize: 16),
-              ),
-              style: TextStyle(fontSize: 18.0),
-            ),
-            TextField(
-              controller: controllerIdKartu,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'ID Kartu',
-                labelStyle: TextStyle(fontSize: 16),
-              ),
-              style: TextStyle(fontSize: 18.0),
-            ),
-            // SizedBox(height: 16.0),
+            namaField(),
+            idKartuField()
+            // TextField(
+            //   controller: controllerNama,
+            //   decoration: InputDecoration(
+            //     labelText: 'Nama Penerima',
+            //     labelStyle: TextStyle(fontSize: 16),
+            //   ),
+            //   style: TextStyle(fontSize: 18.0),
+            // ),
+
+            // TextField(
+            //   controller: controllerIdKartu,
+            //   keyboardType: TextInputType.number,
+            //   decoration: InputDecoration(
+            //     labelText: 'ID Kartu',
+            //     labelStyle: TextStyle(fontSize: 16),
+            //   ),
+            //   style: TextStyle(fontSize: 18.0),
+            // ),
             
             // TextField(
             //   keyboardType: TextInputType.text,
@@ -265,71 +323,80 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
       width: double.infinity,
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: RaisedButton(
-        color: Theme.of(context).primaryColor,
-        child: Padding(
-          padding: EdgeInsets.all(14),
-          child: dynamicText(widget.isEdit ? 'UPDATE' : 'SIMPAN',
-          fontSize: 16,
-          color: Colors.white
-        )),
-        textColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        onPressed: () async {
-          // uploadImage();
-          String nama = controllerNama.text;
-          String idKartu = controllerIdKartu.text;
-          if (currentCat.isEmpty) {
-            showMessage('Pilih kelompok yang tersedia');
-            return;
-          } else if (nama.isEmpty) {
-            showMessage('Nama penerima harus diisi');
-            return;
-          } 
-          // else if (idKartu.isEmpty) {
-          //   showMessage('ID Kartu harus diisi');
-          //   return;
-          // }
-          setState(() => isLoading = true);
-          if (widget.isEdit) {
-            // await updateUser(widget.documentId);
-            // navigationManager(context, Penyaluran(), isPushReplaced: true);
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          RaisedButton(
+            color: Theme.of(context).primaryColor,
+            child: Padding(
+              padding: EdgeInsets.all(14),
+              child: dynamicText(widget.isEdit ? 'UPDATE' : 'SIMPAN',
+              fontSize: 16,
+              color: Colors.white
+            )),
+            textColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            onPressed: () async {
+              // uploadImage();
+              String nama = controllerNama.text;
+              String idKartu = controllerIdKartu.text;
+              if (currentCat.isEmpty) {
+                showMessage('Pilih kelompok yang tersedia');
+                return;
+              } else if (nama.isEmpty) {
+                showMessage('Nama penerima harus diisi');
+                return;
+              } 
+              // else if (idKartu.isEmpty) {
+              //   showMessage('ID Kartu harus diisi');
+              //   return;
+              // }
+              setState(() => isLoading = true);
+              if (widget.isEdit) {
+                // await updateUser(widget.documentId);
+                // navigationManager(context, Penyaluran(), isPushReplaced: true);
 
-            DocumentReference documentTask = firestore.doc('penerimas/${widget.documentId}');
-            firestore.runTransaction((transaction) async {
-              DocumentSnapshot dt = await transaction.get(documentTask);
-              if (dt.exists) {
-                transaction.update(
-                  documentTask,
-                  <String, dynamic>{
-                    'id_kartu': idKartu,
-                    'kelompok': currentCat,
-                    'nama': nama,
-                  },
-                );
-                // Navigator.pop(context, true);
-                // Navigator.pop(context, true);
-                navigationManager(context, Penyaluran(), isPushReplaced: true);
+                DocumentReference documentTask = firestore.doc('penerimas/${widget.documentId}');
+                firestore.runTransaction((transaction) async {
+                  DocumentSnapshot dt = await transaction.get(documentTask);
+                  if (dt.exists) {
+                    transaction.update(
+                      documentTask,
+                      <String, dynamic>{
+                        'id_kartu': idKartu,
+                        'kelompok': currentCat,
+                        'nama': nama,
+                      },
+                    );
+                    // Navigator.pop(context, true);
+                    // Navigator.pop(context, true);
+                    // navigationManager(context, Penyaluran(), isPushReplaced: true);
+                    setState(() => isLoading = false);
+                    showMessage("Data penerima berhasil diupdate");
+                  }
+                });
+              } else {
+                CollectionReference product = firestore.collection('penerimas');
+                DocumentReference result = await product.add(<String, dynamic>{
+                  'bank': 'bni',
+                  'id_kartu': idKartu,
+                  'kelompok': currentCat,
+                  'nama': nama,
+                });
+                // await addUser();
+                if (result.id != null) {
+                  // Navigator.pop(context);
+                  // Navigator.pop(context, true);
+                  // navigationManager(context, Penyaluran(), isPushReplaced: true);
+                  setState(() => isLoading = false);
+                  showMessage("Data penerima berhasil disimpan");
+                }
               }
-            });
-          } else {
-            CollectionReference product = firestore.collection('penerimas');
-            DocumentReference result = await product.add(<String, dynamic>{
-              'bank': 'bni',
-              'id_kartu': idKartu,
-              'kelompok': currentCat,
-              'nama': nama,
-            });
-            // await addUser();
-            if (result.id != null) {
-              // Navigator.pop(context);
-              // Navigator.pop(context, true);
-              navigationManager(context, Penyaluran(), isPushReplaced: true);
-            }
-          }
-        },
+            },
+          ),
+        ],
       ),
     );
   }

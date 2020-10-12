@@ -85,52 +85,135 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                     ),
                     onPressed: () {
                       FocusScope.of(context).requestFocus(FocusNode());
-                      showDialog(
+                      showModalBottomSheet(
+                        isScrollControlled: true,
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            // title: Text('Are You Sure'),
-                            content: Text('Apakah yakin ${penerima.nama.toUpperCase()} akan menerima sembako?'),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('TIDAK'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              FlatButton(
-                                child: Text('PROSES'),
-                                onPressed: () async {
-                                  CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
-                                  DocumentReference result = await penyaluran.add(<String, dynamic>{
-                                    'jenis': 'sembako',
-                                    'penerima': {
-                                      'bank': penerima.bank,
-                                      'id_kartu': penerima.idKartu,
-                                      'kelompok': penerima.kelompok,
-                                      'nama': penerima.nama
-                                    },
-                                    'tanggal_pengambilan': DateTime.now(),
-                                    'total': 200000,
-                                  });
-                                  if (result.id != null) {
-                                    Navigator.pop(context);
-                                    showToast('Data berhasil disimpan',
-                                      context: context,
-                                      axis: Axis.horizontal,
-                                      alignment: Alignment.center,
-                                      position: StyledToastPosition.center);
-                                    // _showSnackBarMessage("Data berhasil disimpan");
-                                  } else {
-                                    CircularProgressIndicator();
-                                  }
+                        builder: (builder) {
+                          return Container(
+                            decoration: new BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: new BorderRadius.only(
+                                topLeft: const Radius.circular(40.0),
+                                topRight: const Radius.circular(40.0))),
+                            child: Padding(
+                            // padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18.0),
+                            padding: EdgeInsets.only(
+                                top: 6,
+                                left: 18,
+                                right: 18,
+                                bottom: MediaQuery.of(context).viewInsets.bottom),
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top : 20, bottom: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    dynamicText("Apakah yakin ${penerima.nama.toUpperCase()} - ${penerima.idKartu} akan menerima sembako?",
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w500,
+                                        textAlign: TextAlign.left),
+                                    SizedBox(height: 10.0),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        OutlineButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: dynamicText("TIDAK", fontSize: 12, color: Colors.red, fontWeight: FontWeight.bold),
+                                          color: Colors.red,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0)
+                                          )
+                                        ),
+                                        OutlineButton(
+                                          onPressed: () async {
+                                            CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
+                                            DocumentReference result = await penyaluran.add(<String, dynamic>{
+                                              'jenis': 'sembako',
+                                              'penerima': {
+                                                'bank': penerima.bank,
+                                                'id_kartu': penerima.idKartu,
+                                                'kelompok': penerima.kelompok,
+                                                'nama': penerima.nama
+                                              },
+                                              'tanggal_pengambilan': DateTime.now(),
+                                              'total': 200000,
+                                            });
+                                            if (result.id != null) {
+                                              Navigator.pop(context);
+                                              showToast('Data berhasil disimpan',
+                                                context: context,
+                                                axis: Axis.horizontal,
+                                                alignment: Alignment.center,
+                                                position: StyledToastPosition.center);
+                                              // _showSnackBarMessage("Data berhasil disimpan");
+                                            } else {
+                                              CircularProgressIndicator();
+                                            }
+                                          },
+                                          child: dynamicText("PROSES", fontSize: 14, color: Colors.green, fontWeight: FontWeight.bold),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(30.0)
+                                          ),
 
-                                },
+                                        ),
+                                      ],
+                                    )
+                                  ]
+                                ),
                               ),
-                            ],
-                          );
-                        },
-                      );
+                            ),
+                          ));
+                        });
+                    
+                      // FocusScope.of(context).requestFocus(FocusNode());
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) {
+                      //     return AlertDialog(
+                      //       // title: Text('Are You Sure'),
+                      //       content: Text('Apakah yakin ${penerima.nama.toUpperCase()} akan menerima sembako?'),
+                      //       actions: <Widget>[
+                      //         FlatButton(
+                      //           child: Text('TIDAK'),
+                      //           onPressed: () {
+                      //             Navigator.pop(context);
+                      //           },
+                      //         ),
+                      //         FlatButton(
+                      //           child: Text('PROSES'),
+                      //           onPressed: () async {
+                      //             CollectionReference penyaluran = FirebaseFirestore.instance.collection('penyalurans');
+                      //             DocumentReference result = await penyaluran.add(<String, dynamic>{
+                      //               'jenis': 'sembako',
+                      //               'penerima': {
+                      //                 'bank': penerima.bank,
+                      //                 'id_kartu': penerima.idKartu,
+                      //                 'kelompok': penerima.kelompok,
+                      //                 'nama': penerima.nama
+                      //               },
+                      //               'tanggal_pengambilan': DateTime.now(),
+                      //               'total': 200000,
+                      //             });
+                      //             if (result.id != null) {
+                      //               Navigator.pop(context);
+                      //               showToast('Data berhasil disimpan',
+                      //                 context: context,
+                      //                 axis: Axis.horizontal,
+                      //                 alignment: Alignment.center,
+                      //                 position: StyledToastPosition.center);
+                      //               // _showSnackBarMessage("Data berhasil disimpan");
+                      //             } else {
+                      //               CircularProgressIndicator();
+                      //             }
+
+                      //           },
+                      //         ),
+                      //       ],
+                      //     );
+                      //   },
+                      // );
                     },
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0)
@@ -231,6 +314,7 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                     },
                     onSelected: (String value) async {
                       if (value == 'edit') {
+                        FocusScope.of(context).requestFocus(FocusNode());
                         bool result = await Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
                             return AddPenerimaScreen(
@@ -249,33 +333,96 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
                         }
                         // navigationManager(context, Penyaluran(), isPushReplaced: false);
                       } else if (value == 'delete') {
-                        showDialog(
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        showModalBottomSheet(
+                          isScrollControlled: false,
                           context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              // title: Text('Are You Sure'),
-                              content: Text('Apakah yakin akan menghapus ${penerima.nama.toUpperCase()}?'),
-                              actions: <Widget>[
-                                FlatButton(
-                                  child: Text('TIDAK'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
+                          builder: (builder) {
+                            return Container(
+                              decoration: new BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: new BorderRadius.only(
+                                  topLeft: const Radius.circular(40.0),
+                                  topRight: const Radius.circular(40.0))),
+                              child: Padding(
+                              // padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18.0),
+                              padding: EdgeInsets.only(
+                                  top: 6,
+                                  left: 18,
+                                  right: 18,
+                                  bottom: MediaQuery.of(context).viewInsets.bottom),
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top : 20, bottom: 20),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      dynamicText("Apakah yakin akan menghapus ${penerima.nama.toUpperCase()} - ${penerima.idKartu}?",
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w500,
+                                        textAlign: TextAlign.left),
+                                      SizedBox(height: 10.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          OutlineButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: dynamicText("TIDAK", fontSize: 12, color: Colors.red, fontWeight: FontWeight.bold),
+                                            color: Colors.red,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30.0)
+                                            )
+                                          ),
+                                          OutlineButton(
+                                            onPressed: () async {
+                                              await document.reference.delete();
+                                              Navigator.pop(context);
+                                              showMessage('Data penerima berhasil dihapus');
+                                            },
+                                            child: dynamicText("HAPUS", fontSize: 14, color: Colors.green, fontWeight: FontWeight.bold),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(30.0)
+                                            ),
+
+                                          ),
+                                        ],
+                                      )
+                                    ]
+                                  ),
                                 ),
-                                FlatButton(
-                                  child: Text('HAPUS'),
-                                  onPressed: () async {
-                                    await document.reference.delete();
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                    navigationManager(context, Penyaluran(), isPushReplaced: false);
-                                    showMessage('Data penerima berhasil dihapus');
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                              ),
+                            ));
+                        });
+                      
+                        // showDialog(
+                        //   context: context,
+                        //   builder: (BuildContext context) {
+                        //     return AlertDialog(
+                        //       // title: Text('Are You Sure'),
+                        //       content: Text('Apakah yakin akan menghapus ${penerima.nama.toUpperCase()}?'),
+                        //       actions: <Widget>[
+                        //         FlatButton(
+                        //           child: Text('TIDAK'),
+                        //           onPressed: () {
+                        //             Navigator.pop(context);
+                        //           },
+                        //         ),
+                        //         FlatButton(
+                        //           child: Text('HAPUS'),
+                        //           onPressed: () async {
+                        //             await document.reference.delete();
+                        //             Navigator.pop(context);
+                        //             Navigator.pop(context);
+                        //             navigationManager(context, Penyaluran(), isPushReplaced: false);
+                        //             showMessage('Data penerima berhasil dihapus');
+                        //           },
+                        //         ),
+                        //       ],
+                        //     );
+                        //   },
+                        // );
                       }
                     },
                   )
@@ -294,4 +441,5 @@ Widget buildTripCard(BuildContext context, DocumentSnapshot document, TextEditin
       ),
     ),
   );
+
 }

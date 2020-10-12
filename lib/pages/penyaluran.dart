@@ -33,10 +33,10 @@ class _PenyaluranState extends State<Penyaluran> {
 
   @override
   void dispose() {
+    super.dispose();
     _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
     _uangController.dispose();
-    super.dispose();
   }
 
   @override
@@ -110,9 +110,10 @@ class _PenyaluranState extends State<Penyaluran> {
           },
         ),
         title: dynamicText(
-          "Total Penerima Bantuan bulan ini",
+          "Total Transaksi bulan ini",
           fontFamily: "Bebas",
-          fontSize: 20
+          fontSize: 20,
+          fontWeight: FontWeight.bold
         ),
         actions: [
           StreamBuilder<QuerySnapshot>(
@@ -132,7 +133,7 @@ class _PenyaluranState extends State<Penyaluran> {
                 child: dynamicText(
                   f.format(snapshot.data.docs.length).toString(),
                   fontFamily: "Bebas",
-                  fontSize: 28,
+                  fontSize: 40,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 )

@@ -61,7 +61,7 @@ class _HomeKelompokState extends State<HomeKelompok> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
-                          child: dynamicText("SUDAH DI PROSES (${widget.totalTransaksi})", fontSize: 14)
+                          child: dynamicText("SUDAH DI PROSES (${widget.totalTransaksi})", fontSize: 12)
                         )
                       ]
                     ),
@@ -76,7 +76,7 @@ class _HomeKelompokState extends State<HomeKelompok> {
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           // child: dynamicText("BELUM MENGAMBIL", fontSize: 14)
-                          child: dynamicText("KESIMPULAN", fontSize: 14)
+                          child: dynamicText("KESIMPULAN", fontSize: 12)
                         )
                       ]
                     ),

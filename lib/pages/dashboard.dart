@@ -109,123 +109,27 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        titleSpacing: 10,
-        backgroundColor: Colors.white,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            IconButton(
-              icon: SvgPicture.asset("assets/icons/user.svg", height: 30,),
-              onPressed: () {
-                // navigationManager(context, ProfileScreen(
-                //   // googleSignIn: googleSignIn,
-                //   // user: widget.user,
-                // ), isPushReplaced: false);
-              },
-            ),
-            // Container(
-            //   width: 40,
-            //   height: 40,
-            //   margin: EdgeInsets.only(right: 10),
-            //   child: ClipRRect(
-            //     borderRadius: BorderRadius.circular(5),
-            //     child: Image.network(
-            //       'https://i.pravatar.cc/100',
-            //     ),
-            //   ),
-            // ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Administrator',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                // Text(
-                //   'Feb 25, 2018',
-                //   style: TextStyle(
-                //     color: Colors.grey,
-                //     fontSize: 12,
-                //   ),
-                // ),
-              ],
-            ),
-          ],
-        ),
-        // actions: <Widget>[
-        //   FlatButton(
-        //     onPressed: () {},
-        //     child: Stack(
-        //       overflow: Overflow.visible,
-        //       children: <Widget>[
-        //         Container(
-        //           width: 50,
-        //           child: Icon(
-        //             Icons.notifications,
-        //             color: Colors.black87,
-        //             size: 35,
-        //           ),
-        //         ),
-        //         Positioned(
-        //           top: 0,
-        //           right: 0,
-        //           width: 20,
-        //           height: 20,
-        //           child: Container(
-        //             decoration: BoxDecoration(
-        //               borderRadius: BorderRadius.circular(25),
-        //               color: Colors.red,
-        //             ),
-        //             width: 20,
-        //             height: 20,
-        //             child: Center(
-        //               child: Text(
-        //                 '03',
-        //                 style: TextStyle(
-        //                   color: Colors.white,
-        //                   fontSize: 9,
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   )
-        // ],
-      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(14, 30, 14, 30),
+          padding: EdgeInsets.fromLTRB(14, 70, 14, 30),
           child: Container(
             width: MediaQuery.of(context).size.width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                // Container(
-                //   width: 70,
-                //   height: 70,
-                //   padding: EdgeInsets.all(15),
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(100),
-                //     color: Theme.of(context).primaryColor.withAlpha(50),
-                //   ),
-                //   child: Image.asset(
-                //     'assets/img/shoe.png',
-                //     width: 60,
-                //   ),
-                // ),
-                // Padding(
-                //   padding: EdgeInsets.only(top: 30),
-                // ),
-                
+                Text(
+                  'transaksi bulan ${DateFormat('MMMM yyyy').format(DateTime.now())}'.toUpperCase(),
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontFamily: 'Bebas',
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 40),
+                ),
+
                 StreamBuilder<QuerySnapshot>(
                   stream: firestore.collection('penyalurans')
                     .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
@@ -294,6 +198,9 @@ class _DashboardState extends State<Dashboard> {
                                 'TOTAL SELURUH PENERIMA ${f.format(snapshot.data.docs.length).toString()}'.toUpperCase(),
                                 style: TextStyle(
                                   color: Colors.grey,
+                                  fontFamily: 'Bebas',
+                                  fontSize: 18,
+                                  // fontWeight: FontWeight.bold,
                                 ),
                               );
                             },
@@ -311,22 +218,9 @@ class _DashboardState extends State<Dashboard> {
                         progressColor: Theme.of(context).primaryColor,
                       ),
                       Padding(
-                        padding: EdgeInsets.only(top: 70),
+                        padding: EdgeInsets.only(top: 40),
                       ),
-                      Text(
-                        // 'total ${(_totalTransaksi >= _totalPenerima) ? 1.0 : double.parse((_totalTransaksi/_totalPenerima).toStringAsFixed(1))} transaksi bulan ${DateFormat('MMMM yyyy').format(DateTime.now())}'.toUpperCase(),
-                        // 'total ${double.parse((_totalTransaksi/_totalPenerima).toString().substring(0,3))} transaksi bulan ${DateFormat('MMMM yyyy').format(DateTime.now())}'.toUpperCase(),
-                        'total transaksi bulan ${DateFormat('MMMM yyyy').format(DateTime.now())}'.toUpperCase(),
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontFamily: 'Bebas',
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 20),
-                      ),
+                      
                       // Text(
                       //   'You walked 165 min today',
                       //   style: TextStyle(
@@ -352,10 +246,14 @@ class _DashboardState extends State<Dashboard> {
                             Text(
                               'SEMBAKO',
                               style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                // color: Theme.of(context).primaryColor,
+                                color: Colors.grey,
                                 fontWeight: FontWeight.bold,
+                                fontFamily: "Bebas",
+                                fontSize: 24
                               ),
                             ),
+                            SizedBox(height: 5),
                             StreamBuilder<QuerySnapshot>(
                               stream: firestore.collection('penyalurans')
                                 .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
@@ -374,16 +272,19 @@ class _DashboardState extends State<Dashboard> {
                                       TextSpan(
                                         text: '${f.format(snapshot.data.docs.length).toString()}',
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.grey,
+                                          fontSize: 18,
+                                          color: Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.bold,
+                                          fontFamily: "Bebas"
                                         ),
                                       ),
                                       TextSpan(
-                                        text: ' transaksi',
+                                        text: ' Transaksi',
                                         style: TextStyle(
                                           color: Colors.grey,
-                                          fontWeight: FontWeight.bold,
+                                          // fontWeight: FontWeight.bold,
+                                          fontFamily: "Bebas",
+                                          fontSize: 16
                                         ),
                                       ),
                                     ],
@@ -391,7 +292,35 @@ class _DashboardState extends State<Dashboard> {
                                 );
                               },
                             ),
-                            
+                            SizedBox(height: 5),
+                            StreamBuilder<QuerySnapshot>(
+                              stream: firestore.collection('penyalurans')
+                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                                .where('jenis', isEqualTo: 'sembako')
+                                .snapshots(),
+                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text('Something went wrong');
+                                }
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Text("RP 0");
+                                }
+                                // Map<String, dynamic> data = snapshot.data.docs;
+                                var grandTotal = 0;
+                                for(var dt in snapshot.data.docs) {
+                                  grandTotal += dt.data()['total'];
+                                }
+                                return Text(
+                                  'RP ${f.format(grandTotal)}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Bebas",
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
+                            ),
                           ],
                         ),
                       ),
@@ -403,10 +332,14 @@ class _DashboardState extends State<Dashboard> {
                             Text(
                               'UANG TUNAI',
                               style: TextStyle(
-                                color: Theme.of(context).primaryColor,
+                                // color: Theme.of(context).primaryColor,
+                                color: Colors.grey,
                                 fontWeight: FontWeight.bold,
+                                fontFamily: "Bebas",
+                                fontSize: 24
                               ),
                             ),
+                            SizedBox(height: 5),
                             StreamBuilder<QuerySnapshot>(
                               stream: firestore.collection('penyalurans')
                                 .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
@@ -425,19 +358,51 @@ class _DashboardState extends State<Dashboard> {
                                       TextSpan(
                                         text: '${f.format(snapshot.data.docs.length).toString()}',
                                         style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.grey,
+                                          fontSize: 18,
+                                          color: Theme.of(context).primaryColor,
                                           fontWeight: FontWeight.bold,
+                                          fontFamily: "Bebas"
                                         ),
                                       ),
                                       TextSpan(
-                                        text: ' transaksi',
+                                        text: ' Transaksi',
                                         style: TextStyle(
                                           color: Colors.grey,
-                                          fontWeight: FontWeight.bold,
+                                          // fontWeight: FontWeight.bold,
+                                          fontFamily: "Bebas",
+                                          fontSize: 16
                                         ),
                                       ),
                                     ],
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 5),
+                            StreamBuilder<QuerySnapshot>(
+                              stream: firestore.collection('penyalurans')
+                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                                .where('jenis', isEqualTo: 'uang tunai')
+                                .snapshots(),
+                              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text('Something went wrong');
+                                }
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return Text("RP 0");
+                                }
+                                // Map<String, dynamic> data = snapshot.data.docs;
+                                var grandTotal = 0;
+                                for(var dt in snapshot.data.docs) {
+                                  grandTotal += dt.data()['total'];
+                                }
+                                return Text(
+                                  'RP ${f.format(grandTotal)}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Bebas",
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 );
                               },
@@ -454,7 +419,7 @@ class _DashboardState extends State<Dashboard> {
                   color: Colors.grey[300],
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: 0),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -496,6 +461,8 @@ class _DashboardState extends State<Dashboard> {
                             return Text(
                               'RP ${f.format(grandTotal)}',
                               style: TextStyle(
+                                fontSize: 22,
+                                fontFamily: "Bebas",
                                 color: Colors.orange,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -508,214 +475,185 @@ class _DashboardState extends State<Dashboard> {
                   ],
                 ),
                 Container(
-                  height: 220,
-                  padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: 
-                  // StreamBuilder<QuerySnapshot>(
-                  //   stream: firestore.collection('penyalurans')
-                  //     .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
-                  //     .snapshots(),
-                  //   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  //     if (snapshot.hasError) {
-                  //       return Text('Something went wrong');
-                  //     }
-                  //     if (snapshot.connectionState == ConnectionState.waiting) {
-                  //       return Text("Loading");
-                  //     }
-                      
-                  //     return ListView.builder(
-                  //       physics: ClampingScrollPhysics(),
-                  //       shrinkWrap: true,
-                  //       scrollDirection: Axis.horizontal,
-                  //       itemCount: snapshot.data.docs.length,
-                  //       itemBuilder: (BuildContext context, int index) {
-                  //         DocumentSnapshot document = snapshot.data.docs[index];
-                  //         Map<String, dynamic> task = document.data();
-                  //         print(task);
-                  //         // if (!task.containsKey(task['penerima']['kelompok'])) {
-                  //         //   print(task[task['penerima']['kelompok']] = 1);
-                  //         // } else {
-                  //         //   print(task[task['penerima']['kelompok']] += 1);
-                  //         //   // map[element.data['name']] += 1;
-                  //         // }
-                  //         return StatCard(
-                  //           title: task['penerima']['kelompok'],
-                  //           achieved: 200,
-                  //           total: 350,
-                  //           color: Colors.orange,
-                  //           image: Image.asset('assets/img/bolt.png', width: 20),
-                  //         );
-                  //       }
-                  //     );
-
-                  //   },
-                  // ), 
-
-                  ListView.builder(
-                    physics: ClampingScrollPhysics(),
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _kelompok.length,
-                    itemBuilder: (BuildContext context, int i) {
-                      // var a = 0;
-                      // if (_kelompok[i] == 'pondok jeruk kulon') {
-                      //   countPenerimaPdkJrkKulon();
-                      //   a = _totalPenerimaNonPdkJrkKulon;
-                      // }
-                      return StreamBuilder<QuerySnapshot>(
-                        stream: firestore.collection('penyalurans')
-                          .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
-                          .snapshots(),
-                        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Something went wrong');
-                          }
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            // return Padding(
-                            //   padding: const EdgeInsets.all(20.0),
-                            //   child: Container(
-                            //     width: 20,
-                            //     child: CircularProgressIndicator(),
-                            //   ),
-                            // );
-                            return Text("Load.. ");
-                          }
-                          var no = 0;
-                          for(var dt in snapshot.data.docs) {
-                            if (dt.data()['penerima']['kelompok'] == _kelompok[i]) {
-                              no++;
-                            }
-                          }
-                          // countPenerimaKelompok(_kelompok[i]);
-                          
-                          // var _list = _totalPenerimaKelompok.values.toList();
-                          // print(_list);
-                          // print('$_kelompok[i] === ${_totalPenerimaKelompok[_kelompok[i]]}');
-                          // return Text("");
-                          
-                          return StatCard(
-                            title: _kelompok[i],
-                            achieved: no,
-                            total: 150,
-                            color: Colors.orange,
-                            image: Image.asset('assets/img/bolt.png', width: 20),
-                          );
-                        },
-                      );
-                    }
-                  ),
-                  
-                  // ListView(
-                  //   physics: ClampingScrollPhysics(),
-                  //   shrinkWrap: true,
-                  //   scrollDirection: Axis.horizontal,
-                  //   children: <Widget>[
-                  //     StreamBuilder<QuerySnapshot>(
-                  //       stream: firestore.collection('penyalurans')
-                  //         .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
-                  //         .snapshots(),
-                  //       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  //         if (snapshot.hasError) {
-                  //           return Text('Something went wrong');
-                  //         }
-                  //         if (snapshot.connectionState == ConnectionState.waiting) {
-                  //           return Text("Loading");
-                  //         }
-                  //         var no = 0;
-                  //         for(var dt in snapshot.data.docs) {
-                  //           if (dt.data()['penerima']['kelompok'] == 'poniyem') {
-                  //             no++;
-                  //           }
-                  //         }
-                  //         return StatCard(
-                  //           title: 'poniyem',
-                  //           achieved: no,
-                  //           total: 100,
-                  //           color: Colors.orange,
-                  //           image: Image.asset('assets/img/bolt.png', width: 20),
-                  //         );
-                  //       },
-                  //     ),
-                  //     StreamBuilder<QuerySnapshot>(
-                  //       stream: firestore.collection('penyalurans')
-                  //         .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
-                  //         .snapshots(),
-                  //       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  //         if (snapshot.hasError) {
-                  //           return Text('Something went wrong');
-                  //         }
-                  //         if (snapshot.connectionState == ConnectionState.waiting) {
-                  //           return Text("Loading");
-                  //         }
-                  //         var no = 0;
-                  //         for(var dt in snapshot.data.docs) {
-                  //           if (dt.data()['penerima']['kelompok'] == 'non pkh') {
-                  //             no++;
-                  //           }
-                  //         }
-                  //         return StatCard(
-                  //           title: 'non pkh',
-                  //           achieved: no,
-                  //           total: 100,
-                  //           color: Colors.orange,
-                  //           image: Image.asset('assets/img/bolt.png', width: 20),
-                  //         );
-                  //       },
-                  //     ),
-                  //     StreamBuilder<QuerySnapshot>(
-                  //       stream: firestore.collection('penyalurans')
-                  //         .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
-                  //         .snapshots(),
-                  //       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  //         if (snapshot.hasError) {
-                  //           return Text('Something went wrong');
-                  //         }
-                  //         if (snapshot.connectionState == ConnectionState.waiting) {
-                  //           return Text("Loading");
-                  //         }
-                  //         var no = 0;
-                  //         for(var dt in snapshot.data.docs) {
-                  //           if (dt.data()['penerima']['kelompok'] == 'sulastri') {
-                  //             no++;
-                  //           }
-                  //         }
-                  //         return StatCard(
-                  //           title: 'sulastri',
-                  //           achieved: no,
-                  //           total: no * 200000,
-                  //           color: Colors.orange,
-                  //           image: Image.asset('assets/img/bolt.png', width: 20),
-                  //         );
-                  //       },
-                  //     ),
-                  //     // StatCard(
-                  //     //   title: 'non pkh',
-                  //     //   achieved: 350,
-                  //     //   total: 300,
-                  //     //   // color: Theme.of(context).primaryColor,
-                  //     //   color: Colors.orange,
-                  //     //   // image: Image.asset('assets/img/fish.png', width: 20),
-                  //     //   image: Image.asset('assets/img/bolt.png', width: 20),
-                  //     // ),
-                  //     // StatCard(
-                  //     //   title: 'sulastri',
-                  //     //   achieved: 100,
-                  //     //   total: 200,
-                  //     //   // color: Colors.green,
-                  //     //   color: Colors.orange,
-                  //     //   // image: Image.asset('assets/img/sausage.png', width: 20),
-                  //     //   image: Image.asset('assets/img/bolt.png', width: 20),
-                  //     // ),
-                  //   ],
-                  // ),
+                  padding: EdgeInsets.only(top: 50, bottom: 10),
+                  width: double.infinity,
+                  child: Text(
+                      'DETAIL PENERIMA TIAP KELOMPOK',
+                      style: TextStyle(
+                        // color: Theme.of(context).primaryColor,
+                        color: Colors.grey,
+                        fontSize: 22,
+                        fontFamily: 'Bebas',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                 ),
+
+                Container(
+                  height: 180,
+                  child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(0),
+                  itemCount: _kelompok.length,
+                  itemBuilder: (BuildContext context, int i) {
+                    return StreamBuilder<QuerySnapshot>(
+                      stream: firestore.collection('penyalurans')
+                        .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                        .snapshots(),
+                      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Something went wrong');
+                        }
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // return Padding(
+                          //   padding: const EdgeInsets.all(20.0),
+                          //   child: Container(
+                          //     width: 20,
+                          //     child: CircularProgressIndicator(),
+                          //   ),
+                          // );
+                          return Text("Load.. ");
+                        }
+                        var no = 0;
+                        for(var dt in snapshot.data.docs) {
+                          if (dt.data()['penerima']['kelompok'] == _kelompok[i]) {
+                            no++;
+                          }
+                        }
+                        return Card(
+                          elevation: 8.0,
+                          margin: new EdgeInsets.symmetric(horizontal: 0.0, vertical: 3.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Color.fromRGBO(64, 75, 96, .9),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                              leading: Container(
+                                padding: EdgeInsets.only(right: 12.0),
+                                decoration: new BoxDecoration(
+                                  border: new Border(
+                                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+                                child: CircularPercentIndicator(
+                                  radius: 40.0,
+                                  lineWidth: 5.0,
+                                  percent: no / (150 < no ? no : 150),
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  // center: Image.asset('assets/img/bolt.png', width: 10),
+                                  center: dynamicText(
+                                    "$no",
+                                    fontSize: 13,
+                                    // fontWeight: FontWeight.bold,
+                                    // color: Theme.of(context).primaryColor
+                                    color: Colors.greenAccent
+                                  ),
+                                  progressColor: Colors.green,
+                                  backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
+                                ),
+                              ),
+                              title: Text(_kelompok[i].toString().toUpperCase(),
+                                style: TextStyle(
+                                  color: Colors.white, 
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18
+                                ),
+                              ),
+                              trailing: Icon(Icons.keyboard_arrow_right, color: Colors.white, size: 30.0),
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return HomeKelompok(
+                                    namaKelompok: _kelompok[i],
+                                    totalPenerima: 150,
+                                    totalTransaksi: no,
+                                  );
+                                }));
+                              },
+                            ),
+                          )
+                        );
+                        
+                        // return StatCard(
+                        //   title: _kelompok[i],
+                        //   achieved: no,
+                        //   total: 150,
+                        //   color: Colors.orange,
+                        //   image: Image.asset('assets/img/bolt.png', width: 20),
+                        // );
+                      },
+                    );
+                    
+                  },
+                )),
+
+                // Container(
+                //   height: 220,
+                //   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                //   child: ListView.builder(
+                //     physics: ClampingScrollPhysics(),
+                //     shrinkWrap: true,
+                //     scrollDirection: Axis.horizontal,
+                //     itemCount: _kelompok.length,
+                //     itemBuilder: (BuildContext context, int i) {
+                //       // var a = 0;
+                //       // if (_kelompok[i] == 'pondok jeruk kulon') {
+                //       //   countPenerimaPdkJrkKulon();
+                //       //   a = _totalPenerimaNonPdkJrkKulon;
+                //       // }
+                //       return StreamBuilder<QuerySnapshot>(
+                //         stream: firestore.collection('penyalurans')
+                //           .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                //           .snapshots(),
+                //         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                //           if (snapshot.hasError) {
+                //             return Text('Something went wrong');
+                //           }
+                //           if (snapshot.connectionState == ConnectionState.waiting) {
+                //             // return Padding(
+                //             //   padding: const EdgeInsets.all(20.0),
+                //             //   child: Container(
+                //             //     width: 20,
+                //             //     child: CircularProgressIndicator(),
+                //             //   ),
+                //             // );
+                //             return Text("Load.. ");
+                //           }
+                //           var no = 0;
+                //           for(var dt in snapshot.data.docs) {
+                //             if (dt.data()['penerima']['kelompok'] == _kelompok[i]) {
+                //               no++;
+                //             }
+                //           }
+                //           // countPenerimaKelompok(_kelompok[i]);
+                          
+                //           // var _list = _totalPenerimaKelompok.values.toList();
+                //           // print(_list);
+                //           // print('$_kelompok[i] === ${_totalPenerimaKelompok[_kelompok[i]]}');
+                //           // return Text("");
+                          
+                //           return StatCard(
+                //             title: _kelompok[i],
+                //             achieved: no,
+                //             total: 150,
+                //             color: Colors.orange,
+                //             image: Image.asset('assets/img/bolt.png', width: 20),
+                //           );
+                //         },
+                //       );
+                //     }
+                //   ),
+                  
+                  
+                // ),
               ],
             ),
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.indigo,
+        // backgroundColor: Colors.indigo,
+        backgroundColor: Colors.red,
         child: Icon(Icons.credit_card),
         onPressed: () {
           navigationManager(context, Penyaluran(), isPushReplaced: false);
