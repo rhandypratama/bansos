@@ -3,11 +3,13 @@ import 'package:bansos/pages/penyaluran.dart';
 import 'package:bansos/utils/widget-model.dart';
 import 'package:content_placeholder/content_placeholder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
+// import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:showcaseview/showcaseview.dart';
 
 
 class Dashboard extends StatefulWidget {
@@ -20,6 +22,12 @@ class _DashboardState extends State<Dashboard> {
   var f = NumberFormat('#,##0', 'id_ID');
   int _totalTransaksi = 0;
   int _totalPenerima = 0;
+  int currentMonth;
+  int currentYear;
+  // GlobalKey _one = GlobalKey();
+  int selectedMonth;
+  int selectedYear;
+  
   // var _totalPenerimaKelompok = {
   //   'pondok jeruk kulon': 0,
   //   'siti': 0,
@@ -63,7 +71,10 @@ class _DashboardState extends State<Dashboard> {
   // }
 
   countTransaksi() async {
-    QuerySnapshot _myDoc = await FirebaseFirestore.instance.collection('penyalurans').where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1)).get();
+    QuerySnapshot _myDoc = await FirebaseFirestore.instance.collection('penyalurans')
+      .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+      .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
+      .get();
     List<DocumentSnapshot> _myDocCount = _myDoc.docs;
     setState(() {
       _totalTransaksi = _myDocCount.length; 
@@ -90,43 +101,205 @@ class _DashboardState extends State<Dashboard> {
     
   // }
 
+  // Future<void> getMonthYear() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   if (prefs.containsKey('currentMonthYear')) {
+  //     var a = await getPreferences('currentMonthYear');
+  //     setState(() {
+  //       currentMonthYear = a;
+  //     });
+  //   } else {
+  //     var a = await savePreferences('currentMonthYear', stringValue: DateTime(DateTime.now().year, DateTime.now().month, 1).toString());
+  //     setState(() {
+  //       currentMonthYear = a;
+  //     });
+  //   }
+  // }
+
+  // savePref() async {
+  //   await savePreferences('currentMonthYear', stringValue: DateTime(DateTime.now().year, DateTime.now().month, 1).toString());
+  // }
+  
+  Future getPref() async {
+    var a = await getPreferences('selectedMonth', kType: 'int');
+    var b = await getPreferences('selectedYear', kType: 'int');
+    setState(() {
+      selectedMonth = a;
+      selectedYear = b;
+      currentMonth = a;
+      currentYear = b;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    countPenerima();
-    countTransaksi();
-    getKelompok();
+      // getPref();
+      // countPenerima();
+      // countTransaksi();
+      // getKelompok();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    getPref();
     countPenerima();
     countTransaksi();
     getKelompok();
+    // countPenerima();
+    // countTransaksi();
+    // getKelompok();
   }
+
+  // var listTrans = [
+  //   {"code": "1-2020", "desc": "1-2020"},
+  //   {"code": "2-2020", "desc": "2-2020"},
+  // ];
+  // var _currentYear = DateFormat('yyyy').format(DateTime.now()).toString();
+  Widget bulanField() {
+    var bulan;
+    var tahun = currentYear.toString();
+    var month = ['JANUARI $tahun', 'FEBRUARI $tahun', 'MARET $tahun', 'APRIL $tahun', 'MEI $tahun', 'JUNI $tahun', 'JULI $tahun', 'AGUSTUS $tahun', 'SEPTEMBER $tahun', 'OKTOBER $tahun', 'NOVEMBER $tahun', 'DESEMBER $tahun'];
+    if (currentMonth == 1) {
+      bulan = "JANUARI";
+    } else if(currentMonth == 2) {
+      bulan = "FEBRUARI";
+    } else if(currentMonth == 3) {
+      bulan = "MARET";
+    } else if(currentMonth == 4) {
+      bulan = "APRIL";
+    } else if(currentMonth == 5) {
+      bulan = "MEI";
+    } else if(currentMonth == 6) {
+      bulan = "JUNI";
+    } else if(currentMonth == 7) {
+      bulan = "JULI";
+    } else if(currentMonth == 8) {
+      bulan = "AGUSTUS";
+    } else if(currentMonth == 9) {
+      bulan = "SEPTEMBER";
+    } else if(currentMonth == 10) {
+      bulan = "OKTOBER";
+    } else if(currentMonth == 11) {
+      bulan = "NOVEMBER";
+    } else if(currentMonth == 12) {
+      bulan = "DESEMBER";
+    }
+    return DropdownButtonFormField(
+      isDense: true,
+      itemHeight: 50,
+      value: '$bulan $tahun',
+      items: month.map((dynamic x) {
+        return DropdownMenuItem<String>(
+          value: x,
+          child: dynamicText("$x", fontSize: 22, fontFamily: "Bebas", fontWeight: FontWeight.bold, color: Colors.green)
+        );
+      }).toList(),
+      onChanged: (newVal) async {
+        await savePreferences('selectedYear', intValue: currentYear);
+        if (newVal == 'JANUARI $tahun') {
+          await savePreferences('selectedMonth', intValue: 1);
+        } else if (newVal == 'FEBRUARI $tahun') {
+          await savePreferences('selectedMonth', intValue: 2);
+        } else if (newVal == 'MARET $tahun') {
+          await savePreferences('selectedMonth', intValue: 3);
+        } else if (newVal == 'APRIL $tahun') {
+          await savePreferences('selectedMonth', intValue: 4);
+        } else if (newVal == 'MEI $tahun') {
+          await savePreferences('selectedMonth', intValue: 5);
+        } else if (newVal == 'JUNI $tahun') {
+          await savePreferences('selectedMonth', intValue: 6);
+        } else if (newVal == 'JULI $tahun') {
+          await savePreferences('selectedMonth', intValue: 7);
+        } else if (newVal == 'AGUSTUS $tahun') {
+          await savePreferences('selectedMonth', intValue: 8);
+        } else if (newVal == 'SEPTEMBER $tahun') {
+          await savePreferences('selectedMonth', intValue: 9);
+        } else if (newVal == 'OKTOBER $tahun') {
+          await savePreferences('selectedMonth', intValue: 10);
+        } else if (newVal == 'NOVEMBER $tahun') {
+          await savePreferences('selectedMonth', intValue: 11);
+        } else if (newVal == 'DESEMBER $tahun') {
+          await savePreferences('selectedMonth', intValue: 12);
+        }
+        var currM = await getPreferences('selectedMonth', kType: 'int');
+        var currY = await getPreferences('selectedYear', kType: 'int');
+        print('DATE =====> $currM');
+        print('DATE =====> $currY');
+        setState(() {
+          currentMonth = currM;
+          currentYear = currY;
+        });
+      },
+    );
+  }
+
+  // var year = ['2020', '2021', '2022'];
+  // Widget yearField() {
+  //   return DropdownButtonFormField(
+  //     isDense: true,
+  //     itemHeight: 50,
+  //     value: '2020',
+  //     items: year.map((dynamic x) {
+  //       return DropdownMenuItem<String>(
+  //         value: x,
+  //         child: dynamicText("$x", fontSize: 24, fontFamily: "Bebas", fontWeight: FontWeight.bold, color: Colors.green)
+  //       );
+  //     }).toList(),
+  //     onChanged: (newVal) {
+  //       setState(() {
+  //         currentTrans = newVal;
+  //       });
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance.addPostFrameCallback((_) => ShowCaseWidget.of(context).startShowCase([_one]));
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(14, 70, 14, 30),
+          padding: EdgeInsets.fromLTRB(14, 60, 14, 30),
           child: Container(
             width: MediaQuery.of(context).size.width,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text(
-                  'transaksi bulan ${DateFormat('MMMM yyyy').format(DateTime.now())}'.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontFamily: 'Bebas',
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+                // Showcase(
+                //   key: _one,
+                //   description: 'Tap to see menu options',
+                //   child: Icon(
+                //     Icons.menu,
+                //     color: Colors.black45,
+                //   ),
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      // 'transaksi bulan ${DateFormat('MMMM yyyy').format(DateTime.now())}'.toUpperCase(),
+                      'transaksi bulan',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'Bebas',
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Container(
+                      width: 150,
+                      child: bulanField()
+                    ),
+                    // Container(
+                    //   width: 50,
+                    //   child: yearField()
+                    // ),
+                  ],
                 ),
+                
                 Padding(
                   padding: EdgeInsets.only(top: 40),
                 ),
@@ -136,7 +309,9 @@ class _DashboardState extends State<Dashboard> {
                 // ),
                 StreamBuilder<QuerySnapshot>(
                   stream: firestore.collection('penyalurans')
-                    .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                    // .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                    .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                    .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                     .snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.hasError) {
@@ -203,15 +378,15 @@ class _DashboardState extends State<Dashboard> {
 
                         ],
                       ),
-                      SizedBox(height: 10),
-                      LinearPercentIndicator(
-                        lineHeight: 8.0,
-                        // percent: (_totalTransaksi >= _totalPenerima) ? 1.0 : double.parse((_totalTransaksi/_totalPenerima).toStringAsFixed(1)),
-                        percent: (_totalTransaksi >= _totalPenerima) ? 1.0 : double.parse((_totalTransaksi/_totalPenerima).toString().substring(0,3)),
-                        linearStrokeCap: LinearStrokeCap.roundAll,
-                        backgroundColor: Theme.of(context).accentColor.withAlpha(30),
-                        progressColor: Theme.of(context).primaryColor,
-                      ),
+                      // SizedBox(height: 10),
+                      // LinearPercentIndicator(
+                      //   lineHeight: 8.0,
+                      //   // percent: (_totalTransaksi >= _totalPenerima) ? 1.0 : double.parse((_totalTransaksi/_totalPenerima).toStringAsFixed(1)),
+                      //   percent: (_totalTransaksi >= _totalPenerima) ? 1.0 : double.parse((_totalTransaksi/_totalPenerima).toString().substring(0,3)),
+                      //   linearStrokeCap: LinearStrokeCap.roundAll,
+                      //   backgroundColor: Theme.of(context).accentColor.withAlpha(30),
+                      //   progressColor: Theme.of(context).primaryColor,
+                      // ),
                       Padding(
                         padding: EdgeInsets.only(top: 40),
                       ),
@@ -244,7 +419,8 @@ class _DashboardState extends State<Dashboard> {
                             SizedBox(height: 5),
                             StreamBuilder<QuerySnapshot>(
                               stream: firestore.collection('penyalurans')
-                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                                .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                                 .where('jenis', isEqualTo: 'sembako')
                                 .snapshots(),
                               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -287,7 +463,8 @@ class _DashboardState extends State<Dashboard> {
                             SizedBox(height: 5),
                             StreamBuilder<QuerySnapshot>(
                               stream: firestore.collection('penyalurans')
-                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                                .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                                 .where('jenis', isEqualTo: 'sembako')
                                 .snapshots(),
                               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -339,7 +516,8 @@ class _DashboardState extends State<Dashboard> {
                             SizedBox(height: 5),
                             StreamBuilder<QuerySnapshot>(
                               stream: firestore.collection('penyalurans')
-                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                                .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                                 .where('jenis', isEqualTo: 'uang tunai')
                                 .snapshots(),
                               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -382,7 +560,8 @@ class _DashboardState extends State<Dashboard> {
                             SizedBox(height: 5),
                             StreamBuilder<QuerySnapshot>(
                               stream: firestore.collection('penyalurans')
-                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                                .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                                .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                                 .where('jenis', isEqualTo: 'uang tunai')
                                 .snapshots(),
                               builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -449,7 +628,8 @@ class _DashboardState extends State<Dashboard> {
                         ),
                         StreamBuilder<QuerySnapshot>(
                           stream: firestore.collection('penyalurans')
-                            .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                            .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                            .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                             .snapshots(),
                           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                             if (snapshot.hasError) {
@@ -499,7 +679,7 @@ class _DashboardState extends State<Dashboard> {
                 ),
 
                 Container(
-                  height: 180,
+                  height: 220,
                   child: ListView.builder(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
@@ -508,7 +688,8 @@ class _DashboardState extends State<Dashboard> {
                   itemBuilder: (BuildContext context, int i) {
                     return StreamBuilder<QuerySnapshot>(
                       stream: firestore.collection('penyalurans')
-                        .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+                        .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(currentYear, currentMonth, 1))
+                        .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(currentYear, currentMonth, 31))
                         .snapshots(),
                       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (snapshot.hasError) {

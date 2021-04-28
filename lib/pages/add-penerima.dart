@@ -81,11 +81,13 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // resultsLoaded = getUsersPastTripsStreamSnapshots();
-    getKelompok();
+    
   }
 
   @override
   void initState() {
+    super.initState();
+    getKelompok();
     if (widget.isEdit) {
       // date = DateFormat('dd MMMM yyyy').parse(widget.date);
       controllerNama.text = widget.nama;
@@ -94,29 +96,28 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
       // initUnit = widget.bank;
       currentCat = widget.kelompok;
     }
-    super.initState();
   }
 
-  CollectionReference users = FirebaseFirestore.instance.collection('penerimas');
-  Future<void> addUser() {
-    return users
-      .add({
-        'bank': 'bni',
-        'id_kartu': controllerIdKartu.text,
-        'kelompok': currentCat,
-        'nama': controllerNama.text,
-      })
-      .then((value) => print("User Added"))
-      .catchError((error) => print("Failed to add user: $error"));
-  }
+  // CollectionReference users = FirebaseFirestore.instance.collection('penerimas');
+  // Future<void> addUser() {
+  //   return users
+  //     .add({
+  //       'bank': 'bni',
+  //       'id_kartu': controllerIdKartu.text,
+  //       'kelompok': currentCat,
+  //       'nama': controllerNama.text,
+  //     })
+  //     .then((value) => print("User Added"))
+  //     .catchError((error) => print("Failed to add user: $error"));
+  // }
 
-  Future<void> updateUser(docId) {
-    return users
-      .doc(docId)
-      .update({'company': 'Stokes and Sons'})
-      .then((value) => print("User Updated"))
-      .catchError((error) => print("Failed to update user: $error"));
-  }
+  // Future<void> updateUser(docId) {
+  //   return users
+  //     .doc(docId)
+  //     .update({'company': 'Stokes and Sons'})
+  //     .then((value) => print("User Updated"))
+  //     .catchError((error) => print("Failed to update user: $error"));
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +131,7 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        centerTitle: false,
         elevation: 0,
         leading: IconButton(
           icon: SvgPicture.asset("assets/icons/back.svg"),
@@ -142,7 +144,7 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
         title: dynamicText(
           widget.isEdit ? "Edit data penerima" : "Tambah data penerima baru",
           fontFamily: "Bebas",
-          fontSize: 22,
+          fontSize: 24,
           fontWeight: FontWeight.bold
         ),
       ),
@@ -155,7 +157,9 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  // _buildWidgetFormPrimary(context),
+                  widget.isEdit 
+                    ? customCard()
+                    : Container(),
                   _buildWidgetCategory(),
                   _buildWidgetFormSecondary(),
                   // _buildWidgetUnit(),
@@ -325,7 +329,9 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: RaisedButton(
         // color: Theme.of(context).primaryColor,
-        color: Colors.indigo,
+        // color: Colors.indigo,
+        // color: Colors.yellow[800],
+        color: Colors.teal[400],
         child: Padding(
           padding: EdgeInsets.all(14),
           child: dynamicText(widget.isEdit ? 'UPDATE' : 'SIMPAN',
@@ -334,7 +340,7 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
         )),
         textColor: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         onPressed: () async {
           // uploadImage();
@@ -346,11 +352,10 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
           } else if (nama.isEmpty) {
             showMessage('Nama penerima harus diisi');
             return;
-          } 
-          // else if (idKartu.isEmpty) {
-          //   showMessage('ID Kartu harus diisi');
-          //   return;
-          // }
+          } else if (idKartu.isEmpty) {
+            showMessage('ID Kartu harus diisi');
+            return;
+          }
           setState(() => isLoading = true);
           if (widget.isEdit) {
             // await updateUser(widget.documentId);
@@ -393,6 +398,141 @@ class _AddPenerimaScreenState extends State<AddPenerimaScreen> {
             }
           }
         },
+      ),
+    );
+  }
+  
+  Widget customCard() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(12, 0, 12, 0),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        color: Colors.red[900],
+        elevation: 10,
+        child: InkWell(
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Row(
+                        children: <Widget>[
+                          dynamicText(
+                            "Nama Penerima",
+                            fontSize: 11,
+                            color: Colors.white
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 0, bottom: 14, right: 0),
+                      child: dynamicText(
+                        "${widget.nama.toUpperCase()}" ?? "",
+                        fontSize: 24,
+                        color: Colors.white.withOpacity(0.8),
+                        fontWeight: FontWeight.bold,
+                        overflow: TextOverflow.fade
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: Row(
+                                children: <Widget>[
+                                  dynamicText(
+                                    "Nomor Kartu",
+                                    fontSize: 11.0,
+                                    color: Colors.white
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 10),
+                              child: Row(
+                                children: <Widget>[
+                                  Row(
+                                    children: [
+                                      // Icon(Icons.credit_card, size: 16,),
+                                      // SizedBox(width: 4),
+                                      dynamicText(
+                                        "XXXX XXXX ${widget.idKartu.substring(0,4)} " ?? "", 
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.bold, 
+                                        color: Colors.white.withOpacity(0.9),
+                                      ),
+                                      dynamicText(
+                                        // "${widget.idKartu}" ?? "", 
+                                        "${widget.idKartu.substring(4,8)}" ?? "", 
+                                        fontSize: 14, 
+                                        fontWeight: FontWeight.bold, 
+                                        color: Colors.white.withOpacity(0.9),
+                                      ),
+                                    ]
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: Row(
+                                children: <Widget>[
+                                  dynamicText(
+                                    "Kelompok",
+                                    fontSize: 11.0,
+                                    color: Colors.white
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 0, bottom: 10),
+                              child: Row(
+                                children: <Widget>[
+                                  dynamicText(
+                                    "${widget.kelompok.toUpperCase()}" ?? "",
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white.withOpacity(0.9),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        
+                      ],
+                    ),
+                    
+                    
+                    
+                  ],
+                ),
+              ),
+              Positioned(
+                top: -30,
+                right: -30,
+                child: Icon(Icons.motion_photos_pause, color: Colors.white12, size: 140),
+              ),
+            ]
+          ),
+          onTap: () {},
+        ),
       ),
     );
   }

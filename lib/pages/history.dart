@@ -1,18 +1,15 @@
-import 'package:bansos/utils/widget-model.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bansos/utils/widget-model.dart';
 
-class ListProses extends StatefulWidget {
-  final String kelompok;
-
-  const ListProses({Key key, this.kelompok}) : super(key: key);
-
+class History extends StatefulWidget {
   @override
-  _ListProsesState createState() => _ListProsesState();
+  _HistoryState createState() => _HistoryState();
 }
 
-class _ListProsesState extends State<ListProses> {
+class _HistoryState extends State<History> {
   final GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   var f = NumberFormat('#,##0', 'id_ID');
@@ -31,6 +28,8 @@ class _ListProsesState extends State<ListProses> {
       .collection('penyalurans')
       .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(b, a, 1))
       .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(b, a, 31))
+      .orderBy('tanggal_pengambilan', descending: true)
+      .limit(20)
       .get();
     setState(() {
       _dtProses = dt.docs;
@@ -39,8 +38,8 @@ class _ListProsesState extends State<ListProses> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     getProses();
   }
 
@@ -52,6 +51,27 @@ class _ListProsesState extends State<ListProses> {
 
     return Scaffold(
       key: scaffoldState,
+      appBar: AppBar(
+        centerTitle: false,
+        backgroundColor: Colors.white,
+        elevation: 1,
+        leadingWidth: 40,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 8),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.black54),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+        title: dynamicText(
+          "RIWAYAT TRANSAKSI",
+          fontFamily: "Bebas",
+          fontSize: 24,
+          fontWeight: FontWeight.bold
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -74,7 +94,7 @@ class _ListProsesState extends State<ListProses> {
           DocumentSnapshot doc = _dtProses[index];
           // print(doc.data()['penerima']['kelompok']);
 
-          if (doc.data()['penerima']['kelompok'] == widget.kelompok) {
+          // if (doc.data()['penerima']['kelompok'] == widget.kelompok) {
             var dateNew = DateTime.parse(doc.data()['tanggal_pengambilan'].toDate().toString());
             final DateFormat formatter = DateFormat('dd/MM/yyyy H:mm');
             final formatted = formatter.format(dateNew);
@@ -159,9 +179,9 @@ class _ListProsesState extends State<ListProses> {
                 ),
               ),
             );
-          }
+          // }
 
-          return Container();
+          // return Container();
           
         },
       ),

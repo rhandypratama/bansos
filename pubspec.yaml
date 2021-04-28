@@ -21,6 +21,8 @@ dependencies:
   flutter_styled_toast: ^1.4.0+1
   flutter_launcher_icons: "^0.8.0"
   content_placeholder: ^0.1.0
+  showcaseview: ^0.1.6
+  flutter_multi_formatter: ^1.1.8
   
 dev_dependencies:
   flutter_test:

@@ -5,8 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ListBelumProses extends StatefulWidget {
   final String kelompok;
+  final int jmlTerproses;
 
-  const ListBelumProses({Key key, this.kelompok}) : super(key: key);
+  const ListBelumProses({Key key, this.kelompok, this.jmlTerproses}) : super(key: key);
 
   @override
   _ListBelumProsesState createState() => _ListBelumProsesState();
@@ -33,6 +34,21 @@ class _ListBelumProsesState extends State<ListBelumProses> {
     // getProses();
   }
 
+  List _dtProses = [];
+  getProses() async {
+    var a = await getPreferences('selectedMonth', kType: 'int');
+    var b = await getPreferences('selectedYear', kType: 'int');
+    var dt = await FirebaseFirestore.instance
+      .collection('penyalurans')
+      .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(b, a, 1))
+      .where('tanggal_pengambilan', isLessThanOrEqualTo : DateTime(b, a, 31))
+      .get();
+    setState(() {
+      _dtProses = dt.docs;
+      // _dtProses = dt.docs.map((e) => e.data()['nama']).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
@@ -40,23 +56,23 @@ class _ListBelumProsesState extends State<ListBelumProses> {
     double heightScreen = mediaQueryData.size.height;
     setState(() => kel = widget.kelompok);
 
-    FirebaseFirestore.instance
-      .collection('penyalurans')
-      .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
-      .get()
-      .then((QuerySnapshot documentSnapshot) {
-        if (documentSnapshot.docs.length > 0) {
-          pel = [];
-          documentSnapshot.docs.forEach((element) {
-            if (element.data()['penerima']['kelompok'] == widget.kelompok) pel.add(element.data()['penerima']['nama']);
-          });
-          // setState(() {
-          //   _belum = pel;
-          // });
-        } else {
-          print('Document does not exist on the database');
-        }
-      });
+    // FirebaseFirestore.instance
+    //   .collection('penyalurans')
+    //   .where('tanggal_pengambilan', isGreaterThanOrEqualTo: DateTime(DateTime.now().year, DateTime.now().month, 1))
+    //   .get()
+    //   .then((QuerySnapshot documentSnapshot) {
+    //     if (documentSnapshot.docs.length > 0) {
+    //       pel = [];
+    //       documentSnapshot.docs.forEach((element) {
+    //         if (element.data()['penerima']['kelompok'] == widget.kelompok) pel.add(element.data()['penerima']['nama']);
+    //       });
+    //       // setState(() {
+    //       //   _belum = pel;
+    //       // });
+    //     } else {
+    //       print('Document does not exist on the database');
+    //     }
+    //   });
 
     return Scaffold(
       key: scaffoldState,
@@ -143,9 +159,10 @@ class _ListBelumProsesState extends State<ListBelumProses> {
                   children: [
                     dynamicText('Total penerima = ${snapshot.data.docs.length}'.toUpperCase(), fontWeight: FontWeight.bold, fontSize: 16),
                     SizedBox(height: 10),
-                    dynamicText('Total yang sudah diproses = ${pel.length}'.toUpperCase(), fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green),
+                    // dynamicText('Total yang sudah diproses = ${pel.length}'.toUpperCase(), fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green),
+                    dynamicText('Total yang sudah diproses = ${widget.jmlTerproses}'.toUpperCase(), fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green),
                     SizedBox(height: 10),
-                    dynamicText('Total yang belum mengambil = ${snapshot.data.docs.length - pel.length}'.toUpperCase(), fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red),
+                    dynamicText('Total yang belum mengambil = ${snapshot.data.docs.length - widget.jmlTerproses}'.toUpperCase(), fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red),
                   ],
                 ),
               ),

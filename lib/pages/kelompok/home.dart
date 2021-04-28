@@ -92,7 +92,7 @@ class _HomeKelompokState extends State<HomeKelompok> {
           body: TabBarView(children: <Widget>[
             ListProses(kelompok: widget.namaKelompok),
             ListSemua(kelompok: widget.namaKelompok),
-            ListBelumProses(kelompok: widget.namaKelompok),
+            ListBelumProses(kelompok: widget.namaKelompok, jmlTerproses: widget.totalTransaksi.toInt()),
             // BarangScreen(),
             // DaftarPesananScreen(),
           ])
